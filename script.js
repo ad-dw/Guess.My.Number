@@ -5,12 +5,12 @@ const statusMessage = {
   high: "TOO HIGH",
   correct: "YOU WON !!!",
   wrong: "You Lost...",
-  start: "Start Guessing",
-  empty: "Enter a number!",
+  start: "Start guessing...",
+  empty: "Nothing to check! Enter a number",
   outOfRange: "Guessed number not in range!",
 };
 
-const secretNumber = Math.trunc(Math.random() * 20) + 1;
+let secretNumber = Math.trunc(Math.random() * 20) + 1;
 let score = 20;
 let highscore = 0;
 
@@ -18,17 +18,24 @@ const message = document.querySelector(".message");
 const numberElement = document.querySelector(".number");
 const scoreElement = document.querySelector(".score");
 const checkBtn = document.querySelector(".check");
+const resetBtn = document.querySelector(".again");
 
-const updateUI = function (backgroundColor, messageText) {
+const updateUI = function (
+  backgroundColor,
+  messageText,
+  secretNumberWidth,
+  secretNumberValue,
+  disableCheckBtn
+) {
   document.body.style.backgroundColor = backgroundColor;
   message.textContent = messageText;
-  numberElement.style.width = "30rem";
-  numberElement.textContent = secretNumber;
-  checkBtn.disabled = true;
+  numberElement.style.width = secretNumberWidth;
+  numberElement.textContent = secretNumberValue;
+  checkBtn.disabled = disableCheckBtn;
 };
 
 const declareWin = function () {
-  updateUI("#60b347", statusMessage.correct);
+  updateUI("#60b347", statusMessage.correct, "30rem", secretNumber, true);
   if (score > highscore) {
     document.querySelector(".highscore").textContent = score;
   }
@@ -39,7 +46,7 @@ const handleOutOfRangeGuess = function () {
 };
 
 const handleWrongGuess = function (guessedNumber) {
-  if (guessedNumber < 0 || guessedNumber > 20) {
+  if (guessedNumber <= 0 || guessedNumber > 20) {
     handleOutOfRangeGuess();
   } else if (guessedNumber < secretNumber) {
     message.textContent = statusMessage.low;
@@ -51,16 +58,17 @@ const handleWrongGuess = function (guessedNumber) {
 };
 
 const declareLoss = function () {
-  updateUI("#dc143c", statusMessage.wrong);
+  updateUI("#dc143c", statusMessage.wrong, "30rem", secretNumber, true);
   score--;
   scoreElement.textContent = score;
 };
 
 const checkGuessedNumber = function () {
-  const guessedNumber = +document.querySelector(".guess").value;
+  let guessedNumber = document.querySelector(".guess").value;
   if (!guessedNumber) {
     message.textContent = statusMessage.empty;
   } else {
+    guessedNumber = +guessedNumber;
     if (guessedNumber === secretNumber) {
       declareWin();
     } else {
@@ -73,4 +81,13 @@ const checkGuessedNumber = function () {
   }
 };
 
+const resetGame = function () {
+  score = 20;
+  secretNumber = Math.trunc(Math.random() * 20) + 1;
+  scoreElement.textContent = score;
+  updateUI("#222", statusMessage.start, "15rem", "?", false);
+  document.querySelector(".guess").value = "";
+};
+
 checkBtn.addEventListener("click", checkGuessedNumber);
+resetBtn.addEventListener("click", resetGame);
