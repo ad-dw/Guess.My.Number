@@ -19,6 +19,7 @@ const numberElement = document.querySelector(".number");
 const scoreElement = document.querySelector(".score");
 const checkBtn = document.querySelector(".check");
 const resetBtn = document.querySelector(".again");
+const guessInputfeild = document.querySelector(".guess");
 
 const updateUI = function (
   backgroundColor,
@@ -39,6 +40,7 @@ const declareWin = function () {
   if (score > highscore) {
     document.querySelector(".highscore").textContent = score;
   }
+  guessInputfeild.removeEventListener("keydown", handleKeyInteraction);
 };
 
 const handleOutOfRangeGuess = function () {
@@ -61,10 +63,11 @@ const declareLoss = function () {
   updateUI("#dc143c", statusMessage.wrong, "30rem", secretNumber, true);
   score--;
   scoreElement.textContent = score;
+  guessInputfeild.removeEventListener("keydown", handleKeyInteraction);
 };
 
 const checkGuessedNumber = function () {
-  let guessedNumber = document.querySelector(".guess").value;
+  let guessedNumber = guessInputfeild.value;
   if (!guessedNumber) {
     message.textContent = statusMessage.empty;
   } else {
@@ -87,7 +90,16 @@ const resetGame = function () {
   scoreElement.textContent = score;
   updateUI("#222", statusMessage.start, "15rem", "?", false);
   document.querySelector(".guess").value = "";
+  guessInputfeild.addEventListener("keydown", handleKeyInteraction);
+};
+
+const handleKeyInteraction = function (event) {
+  console.log("here", event);
+  if (event.key === "Enter") {
+    checkGuessedNumber();
+  }
 };
 
 checkBtn.addEventListener("click", checkGuessedNumber);
 resetBtn.addEventListener("click", resetGame);
+guessInputfeild.addEventListener("keydown", handleKeyInteraction);
