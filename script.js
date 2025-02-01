@@ -35,12 +35,26 @@ const updateUI = function (
   checkBtn.disabled = disableCheckBtn;
 };
 
+const startConfetti = () => {
+  setTimeout(function () {
+    confetti.start();
+  }, 1000);
+};
+
+const stopConfetti = () => {
+  setTimeout(function () {
+    confetti.stop();
+  }, 5000);
+};
+
 const declareWin = function () {
   updateUI("#60b347", statusMessage.correct, "30rem", secretNumber, true);
   if (score > highscore) {
     document.querySelector(".highscore").textContent = score;
   }
   guessInputfeild.removeEventListener("keydown", handleKeyInteraction);
+  startConfetti();
+  stopConfetti();
 };
 
 const handleOutOfRangeGuess = function () {
@@ -94,7 +108,6 @@ const resetGame = function () {
 };
 
 const handleKeyInteraction = function (event) {
-  console.log("here", event);
   if (event.key === "Enter") {
     checkGuessedNumber();
   }
